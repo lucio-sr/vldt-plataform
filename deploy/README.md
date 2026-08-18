@@ -19,8 +19,8 @@ Caddy é opcional e só inicia com o profile `with-caddy`.
 
 ## Primeira implantação
 
-1. Aponte dois DNS para o IP da VM: `plataform.vldt.com.br` e
-   `api.plataform.vldt.com.br`.
+1. Aponte dois DNS para o IP da VM: `platform.vldt.com.br` e
+   `api.platform.vldt.com.br`.
    Libere as portas TCP 80 e 443 no firewall/provedor.
 2. Instale Docker Engine e o plugin Docker Compose na VM.
 3. Copie o repositório para a VM e, na raiz deste projeto, crie o arquivo de
@@ -50,7 +50,7 @@ docker compose -f docker-compose.prod.yml ps
 
 6. Configure o Nginx da VM para encaminhar os domínios a `127.0.0.1:8081`
    (web) e `127.0.0.1:3001` (API), então confirme que
-   `https://api.plataform.vldt.com.br/health` responde.
+   `https://api.platform.vldt.com.br/health` responde.
 
 ### Alternativa: Caddy sem Nginx existente
 
