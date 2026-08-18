@@ -1,0 +1,11 @@
+# Caddy emite e renova certificados HTTPS automaticamente quando ambos os
+# domínios apontam para o IP desta máquina e as portas 80/443 estão liberadas.
+{$WEB_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy web:80
+}
+
+{$API_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy api:3001
+}

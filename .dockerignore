@@ -1,0 +1,11 @@
+# Não enviar dependências locais, segredos nem artefatos ao contexto de build.
+node_modules
+**/node_modules
+.git
+.env
+.env.*
+!.env.example
+dist
+**/dist
+coverage
+.DS_Store

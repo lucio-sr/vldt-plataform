@@ -1,12 +1,68 @@
-# deploy/ — rascunhos de empacotamento (PONTO DE PARTIDA, NÃO TESTADOS)
+# deploy/ — implantação em uma VM Docker
 
-Estes arquivos aceleram o deploy, mas **não foram executados**. Trate-os como esqueleto,
-não como algo pronto. Valide em staging.
+O `docker-compose.prod.yml` da raiz sobe a aplicação inteira em uma única VM:
+Postgres com pgvector, Redis, API, front-end e Caddy (HTTPS). Postgres e Redis
+ficam somente na rede interna do Docker — não há portas deles publicadas.
+
+> A configuração ainda deve ser validada na VM antes de usá-la como produção.
 
 ## Arquivos
 - `Dockerfile.api` — API NestJS + worker, rodando via `tsx`.
-- `Dockerfile.web` — build do Vite + nginx. Requer `--build-arg VITE_API_URL=...`.
+- `Dockerfile.web` — build do Vite + nginx. Recebe `VITE_API_URL` pelo Compose.
 - `nginx.conf` — config SPA (fallback para index.html).
+- `Caddyfile` — proxy reverso e HTTPS automático para web e API.
+- `.env.production.example` — modelo de variáveis para a VM.
+
+## Primeira implantação
+
+1. Aponte dois DNS para o IP da VM: por exemplo `app.seudominio.com` e
+   `api.seudominio.com`. Libere as portas TCP 80 e 443 no firewall/provedor.
+2. Instale Docker Engine e o plugin Docker Compose na VM.
+3. Copie o repositório para a VM e, na raiz deste projeto, crie o arquivo de
+   segredos a partir do exemplo:
+
+```bash
+cp deploy/.env.production.example .env
+chmod 600 .env
+```
+
+4. Edite `.env`: troque domínios, senha do Postgres e `BETTER_AUTH_SECRET`.
+   A senha deve ser URL-segura (use letras, números, `-` e `_`) porque aparece
+   também dentro de `DATABASE_URL`. Gere o segredo, por exemplo, com:
+
+```bash
+openssl rand -base64 48
+```
+
+5. Construa as imagens, aplique as migrations e inicie os serviços:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env build
+docker compose -f docker-compose.prod.yml --env-file .env run --rm api node --import tsx db/migrate.mjs
+docker compose -f docker-compose.prod.yml --env-file .env up -d
+docker compose -f docker-compose.prod.yml ps
+```
+
+6. Confirme que `https://api.seudominio.com/health` responde. O Caddy obtém e
+   renova os certificados TLS automaticamente após o DNS estar correto.
+
+## Atualização
+
+```bash
+git pull
+docker compose -f docker-compose.prod.yml --env-file .env build
+docker compose -f docker-compose.prod.yml --env-file .env run --rm api node --import tsx db/migrate.mjs
+docker compose -f docker-compose.prod.yml --env-file .env up -d
+```
+
+Para acompanhar erros:
+
+```bash
+docker compose -f docker-compose.prod.yml logs -f api caddy
+```
+
+Faça backup periódico do volume `labvie_pgdata`; os dados do Postgres moram
+nele e não são removidos por um `docker compose up` ou reinício comum.
 
 ## Gap importante (leia)
 Os pacotes `@labvie/domain` e `@labvie/agents` são importados como **TypeScript cru**
@@ -17,15 +73,6 @@ Os pacotes `@labvie/domain` e `@labvie/agents` são importados como **TypeScript
 - Caminho "definitivo" no futuro: bundlar a API com esbuild num único `.js` e aí usar
   `node`. Fica como melhoria, não bloqueia o deploy inicial.
 
-## Migrations ANTES de subir a API
-Com o `DATABASE_URL` de produção no ambiente:
-```bash
-npm ci
-node db/migrate.mjs        # ou: npm run db:migrate  (carrega .env da raiz)
-```
-Rode isso uma vez por deploy que inclua migrations novas, antes de subir a API.
-
-## Falta ainda (não incluso de propósito, decisão de infra)
-- docker-compose de produção / manifests de orquestração (ECS, k8s, etc.).
+## Ainda fora de escopo
 - CI/CD.
-- Postgres + Redis gerenciados (o docker-compose da raiz é só para DEV).
+- Postgres e Redis gerenciados (esta configuração os executa na própria VM).
