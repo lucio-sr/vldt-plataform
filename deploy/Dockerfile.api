@@ -25,5 +25,7 @@ ENV API_PORT=3001
 ENV QUEUE_ENABLED=true
 EXPOSE 3001
 
-# roda a API+worker via tsx (sem watch). As migrations devem rodar ANTES (ver deploy/README.md).
-CMD ["node", "--import", "tsx", "apps/api/src/main.ts"]
+# Roda a API+worker via tsx (sem watch). O diretório da API é necessário para
+# que o tsx encontre apps/api/tsconfig.json, que habilita decorators do NestJS.
+# As migrations devem rodar ANTES (ver deploy/README.md).
+CMD ["sh", "-c", "cd apps/api && node --import tsx src/main.ts"]
