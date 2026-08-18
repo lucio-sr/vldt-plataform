@@ -45,6 +45,9 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    # Acesso apenas pelo Nginx instalado na própria VM.
+    ports:
+      - "127.0.0.1:3001:3001"
     networks: [private, public]
 
   web:
@@ -54,10 +57,15 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
     restart: unless-stopped
+    # Acesso apenas pelo Nginx instalado na própria VM.
+    ports:
+      - "127.0.0.1:8081:80"
     networks: [public]
 
   caddy:
     image: caddy:2-alpine
+    # Não inicia no uso padrão: habilite somente em VMs sem proxy HTTPS existente.
+    profiles: ["with-caddy"]
     restart: unless-stopped
     environment:
       WEB_DOMAIN: ${WEB_DOMAIN}

@@ -1,8 +1,12 @@
 # deploy/ — implantação em uma VM Docker
 
 O `docker-compose.prod.yml` da raiz sobe a aplicação inteira em uma única VM:
-Postgres com pgvector, Redis, API, front-end e Caddy (HTTPS). Postgres e Redis
-ficam somente na rede interna do Docker — não há portas deles publicadas.
+Postgres com pgvector, Redis, API e front-end. Postgres e Redis ficam somente
+na rede interna do Docker — não há portas deles publicadas.
+
+Por padrão, a API é publicada somente em `127.0.0.1:3001` e o front-end em
+`127.0.0.1:8081`, para que um Nginx já instalado na VM faça o HTTPS. O serviço
+Caddy é opcional e só inicia com o profile `with-caddy`.
 
 > A configuração ainda deve ser validada na VM antes de usá-la como produção.
 
@@ -10,13 +14,14 @@ ficam somente na rede interna do Docker — não há portas deles publicadas.
 - `Dockerfile.api` — API NestJS + worker, rodando via `tsx`.
 - `Dockerfile.web` — build do Vite + nginx. Recebe `VITE_API_URL` pelo Compose.
 - `nginx.conf` — config SPA (fallback para index.html).
-- `Caddyfile` — proxy reverso e HTTPS automático para web e API.
+- `Caddyfile` — proxy reverso e HTTPS automático para web e API (opcional).
 - `.env.production.example` — modelo de variáveis para a VM.
 
 ## Primeira implantação
 
-1. Aponte dois DNS para o IP da VM: por exemplo `app.seudominio.com` e
-   `api.seudominio.com`. Libere as portas TCP 80 e 443 no firewall/provedor.
+1. Aponte dois DNS para o IP da VM: `plataform.vldt.com.br` e
+   `api.plataform.vldt.com.br`.
+   Libere as portas TCP 80 e 443 no firewall/provedor.
 2. Instale Docker Engine e o plugin Docker Compose na VM.
 3. Copie o repositório para a VM e, na raiz deste projeto, crie o arquivo de
    segredos a partir do exemplo:
@@ -43,8 +48,17 @@ docker compose -f docker-compose.prod.yml --env-file .env up -d
 docker compose -f docker-compose.prod.yml ps
 ```
 
-6. Confirme que `https://api.seudominio.com/health` responde. O Caddy obtém e
-   renova os certificados TLS automaticamente após o DNS estar correto.
+6. Configure o Nginx da VM para encaminhar os domínios a `127.0.0.1:8081`
+   (web) e `127.0.0.1:3001` (API), então confirme que
+   `https://api.plataform.vldt.com.br/health` responde.
+
+### Alternativa: Caddy sem Nginx existente
+
+Em uma VM sem outro proxy usando as portas 80/443, suba também o profile Caddy:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env --profile with-caddy up -d
+```
 
 ## Atualização
 
