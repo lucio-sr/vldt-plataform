@@ -1,0 +1,28 @@
+{
+  "name": "novo-labvie",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Novo Labvie — copesquisador estratégico (PRD v0.1). Monorepo TS.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:api": "npm run dev -w @labvie/api",
+    "dev:web": "npm run dev -w @labvie/web",
+    "db:migrate": "node --env-file=.env db/migrate.mjs",
+    "db:test": "node db/test-migrations.mjs",
+    "gen:schemas": "node scripts/gen-schemas.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.2.17",
+    "yaml": "^2.6.0"
+  },
+  "license": "UNLICENSED"
+}

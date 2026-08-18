@@ -1,0 +1,41 @@
+{
+  "name": "@labvie/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file=../../.env --import tsx src/main.ts",
+    "dev:nowatch": "node --env-file=../../.env --import tsx src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "tsx test/auth-e2e.ts",
+    "test:loop": "tsx test/pillar-loop-e2e.ts",
+    "test:interview": "tsx test/interview-e2e.ts",
+    "db:migrate": "node ../../db/migrate.mjs"
+  },
+  "dependencies": {
+    "@labvie/agents": "*",
+    "@labvie/domain": "*",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "better-auth": "^1.6.20",
+    "bullmq": "^5.34.0",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.0.0",
+    "ioredis": "^5.4.0",
+    "pg": "^8.13.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.2.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

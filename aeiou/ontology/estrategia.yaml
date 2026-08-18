@@ -1,0 +1,25 @@
+pillar: estrategia
+letter: E
+founder_name: Sua aposta
+description: >
+  A hipótese central de negócio, as capacidades necessárias e o roteiro 12–24m.
+  Troca palpite por apostas testáveis com critério de falsificação.
+entities:
+  - id: hypothesis
+    fields: [id, statement, falsification_criterion, status, confidence]
+  - id: capability
+    fields: [id, name, owned, gap, plan_to_acquire]
+  - id: bet
+    fields: [id, description, logic, acceptable_loss, time_horizon_months]
+artifacts_required:
+  - central_hypothesis
+  - capability_map
+  - roadmap_12_24m
+completion_criteria:
+  - central_hypothesis_has_falsification_criterion
+  - differentiated_vs_commodity_demonstrated
+  - capability_gaps_identified
+gate_decisions:
+  - id: strategic_differentiation
+    criteria: hipótese diferenciada E não-commodity E aposta com perda aceitável definida
+    output: [go, no-go, conditional-go]

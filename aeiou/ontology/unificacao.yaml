@@ -1,0 +1,25 @@
+pillar: unificacao
+letter: U
+founder_name: O time
+description: >
+  Plano de time, governança e mapa de riscos. Tira a aposta do papel —
+  quem executa, como se decide, o que pode quebrar.
+entities:
+  - id: role
+    fields: [id, title, owned_by, gap, hiring_plan]
+  - id: governance_rule
+    fields: [id, decision_type, who_decides, cadence]
+  - id: risk
+    fields: [id, description, severity, mitigation]
+artifacts_required:
+  - team_plan
+  - governance_model
+  - risk_map
+completion_criteria:
+  - key_roles_identified_with_gaps
+  - decision_rights_defined
+  - top_risks_with_mitigation
+gate_decisions:
+  - id: execution_readiness
+    criteria: papéis-chave cobertos ou com plano E riscos críticos mitigados
+    output: [go, no-go, conditional-go]

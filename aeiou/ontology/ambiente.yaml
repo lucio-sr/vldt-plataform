@@ -1,0 +1,25 @@
+pillar: ambiente
+letter: A
+founder_name: O terreno
+description: >
+  Cenários competitivos, mercados em rede, fatores competitivos e contexto
+  regulatório. Responde "existe espaço real e acessível?".
+entities:
+  - id: scenario
+    fields: [id, name, description, probability, time_horizon_months, competitive_factors]
+  - id: market
+    fields: [id, name, tam, sam, som, network_effects, regulatory_context]
+  - id: competitive_factor
+    fields: [name, weight, defensibility]
+artifacts_required:
+  - scenario_map          # >= 3 cenários
+  - market_sizing         # TAM/SAM/SOM com premissas
+  - competitive_landscape
+completion_criteria:
+  - at_least_3_scenarios_documented
+  - market_sized_with_assumptions
+  - top_3_competitive_factors_identified
+gate_decisions:
+  - id: market_attractiveness
+    criteria: SOM acima do threshold E time_to_market < 18 meses
+    output: [go, no-go, conditional-go]

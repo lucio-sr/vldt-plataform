@@ -1,0 +1,25 @@
+pillar: interacoes
+letter: I
+founder_name: Seus clientes
+description: >
+  Jornada do cliente validada, plano de "ovo e galinha" e pitch testado.
+  Garante não construir o que ninguém quer.
+entities:
+  - id: persona
+    fields: [id, name, jobs_to_be_done, pains, gains]
+  - id: interview
+    fields: [id, persona_id, transcript_ref, objections, patterns]
+  - id: journey_stage
+    fields: [id, name, touchpoints, validated]
+artifacts_required:
+  - validated_customer_journey
+  - chicken_and_egg_plan
+  - tested_pitch
+completion_criteria:
+  - at_least_5_interviews_analyzed
+  - top_objections_documented
+  - journey_validated_with_evidence
+gate_decisions:
+  - id: demand_validation
+    criteria: dor confirmada por evidência E disposição a pagar sinalizada
+    output: [go, no-go, conditional-go]

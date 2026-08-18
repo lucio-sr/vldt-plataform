@@ -1,0 +1,25 @@
+pillar: operacoes
+letter: O
+founder_name: A entrega
+description: >
+  Operação mínima viável, indicadores e plano de escala. Entregar de forma
+  consistente sem adicionar peso cedo demais.
+entities:
+  - id: process
+    fields: [id, name, manual_or_automated, bottleneck, cost_driver]
+  - id: metric
+    fields: [id, name, target, current, cadence]
+  - id: scale_step
+    fields: [id, description, trigger_condition, risk]
+artifacts_required:
+  - minimum_viable_operation
+  - operating_indicators
+  - scale_plan
+completion_criteria:
+  - core_process_mapped
+  - at_least_3_operating_metrics_defined
+  - scale_triggers_identified
+gate_decisions:
+  - id: operational_readiness
+    criteria: operação mínima entrega valor E unit economics não-suicida
+    output: [go, no-go, conditional-go]

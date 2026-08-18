@@ -1,0 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+/* Paleta editorial sóbria (PRD Apêndice A): off-white quente, tinta ardósia,
+   acento esmeralda; azul=planejar, âmbar=apostar. Sementes de design tokens. */
+@theme {
+  --color-ink: #1f2421;
+  --color-ink-soft: #4b524d;
+  --color-paper: #faf8f4;
+  --color-card: #ffffff;
+  --color-line: #e7e2d8;
+  --color-esmeralda: #0f766e;
+  --color-planejar: #1d4ed8;
+  --color-apostar: #b45309;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
